@@ -61,6 +61,8 @@ export class BaseNamespace<
     const { topics, ...listeners } = listenOptions
     const _uuid = uuid()
 
+    getLogger().info(`SIGNALWIRE: ${_uuid} subscribe`)
+
     // Attach listeners
     this._attachListenersWithTopics(topics!, listeners as Listeners<T>)
 
@@ -68,7 +70,9 @@ export class BaseNamespace<
     const sessionReconnectedHandler = () => {
       if (this._areListenersAttached(topics!, listeners as Listeners<T>)) {
         this.addTopics(topics!).then(() => {
-          getLogger().info('topics added after ws reconnection')
+          getLogger().info(
+            `SIGNALWIRE: ${_uuid} SIGNALWIRE: topics added after ws reconnection`
+          )
         })
       }
     }
@@ -76,7 +80,7 @@ export class BaseNamespace<
     // will be called when a new ws is acquired
     const sessionReconnectingHandler = () => {
       getLogger().debug(
-        'session.reconnecting emitted! handling existing topics'
+        `SIGNALWIRE: ${_uuid} session.reconnecting emitted! handling existing topics`
       )
       // remove the previous listener if any
       this._client.session.off('session.connected', sessionReconnectedHandler)
